@@ -98,32 +98,43 @@ def get_platforms_data_summary(platform):
 
 
 def get_general_report():
-    platforms = services.get_platform()
+    platforms_data = services.get_platform()
+    platforms = [p["value"] for p in platforms_data["platforms"]]
 
     csv_output = StringIO()
     writer = csv.writer(csv_output)
-    writer.writerow(["Platform", "Ad name", "Clicks", "Spend"])
+    writer.writerow([
+        "Platform",
+        "Account Name",
+        "Ad Name",
+        "Impressions",
+        "Clicks",
+        "Spend",
+        "Cost per Click"
+    ])
 
     for platform in platforms:
         accounts = services.get_accounts(platform)
-        fields = services.get_fields(platform)
+        if "accounts" in accounts:
+            for account in accounts["accounts"]:
+                insights = services.get_insights(platform, account)
+                if "insights" in insights:
+                    for insight in insights["insights"]:
+                        spend_field = "spend" if platform == "meta_ads" else "cost"
+                        spend = insight.get(spend_field, 0)
+                        clicks = insight.get("clicks", 0)
+                        cpc = spend / clicks if clicks > 0 else 0
 
-        if isinstance(accounts, list):
-            for account in accounts:
-                insights = services.get_insights(
-                    platform,
-                    account["name"],
-                    fields
-                    )
-                for insight in insights:
-                    writer.writerow(
-                        [
+                        writer.writerow([
                             platform,
-                            insight["name"],
-                            insight["clicks"],
-                            insight["spend"]]
-                    )
-
+                            account["name"],
+                            insight.get("ad_name", ""),
+                            insight.get("impressions", 0),
+                            clicks,
+                            spend,
+                            cpc
+                        ])
+    
     return csv_output.getvalue()
 
 
