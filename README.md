@@ -24,11 +24,13 @@ http://localhost:5000
 
 ## Endpoints
 
+_Plataformas_
+
 - GET /<platform> - Traz todos os ads de uma plataforma especifica
 - GET <platform>/resumo - Traz um resumo de todos os ads de uma plataforma
 - GET <platform>/download - Download dos ads de uma plataforma por CSV
 
-Geral
+_Geral_
 
 - GET /geral - Traz todos os dados gerais
 - GET /geral/resumo - Traz um resumo de todas as plataformas
