@@ -78,10 +78,10 @@ def get_platforms_data_summary(platform):
                     )
                     summary[account_name]["Clicks"] += int(
                         insight.get("clicks", 0)
-                        )
+                    )
                     summary[account_name]["Spend"] += float(
                         insight.get(spend_field, 0)
-                        )
+                    )
 
     for account_name, metrics in summary.items():
         writer.writerow(
